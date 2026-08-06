@@ -5,4 +5,8 @@ Base.metadata.create_all(engine)
 
 app = FastAPI(title="this is my task managment application")
 
-
+@app.get("/")
+def home():
+    return {
+        "message" : "api is running fine"
+    }
