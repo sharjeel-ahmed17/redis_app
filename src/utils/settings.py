@@ -4,6 +4,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env" , extra="ignore")
 
     DB_URI : str
+    REDIS_URI : str = "redis://localhost:6379/0"
 
 
 settings= Settings()

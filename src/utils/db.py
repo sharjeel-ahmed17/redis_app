@@ -1,7 +1,10 @@
+import redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker , declarative_base
 from src.utils.settings import settings
 Base = declarative_base()
+
+redis_client = redis.Redis.from_url(settings.REDIS_URI, decode_responses=True)
 engine = create_engine(
     settings.DB_URI , 
     pool_pre_ping=True, 
