@@ -13,3 +13,11 @@ def create_task(body : TaskSchema , db :session ):
     db.commit()
     db.refresh(new_task)
     return {"message": "create task route" , "data" : new_task}
+
+
+def get_task(db : session):
+    tasks = db.query(Task).all()
+    return {
+        "messages" : "get task",
+        "data" : tasks
+    }

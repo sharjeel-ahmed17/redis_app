@@ -8,3 +8,8 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 @router.post("/")
 def create_task(body : TaskSchema , db = Depends(get_db) ):
     return controller.create_task(body , db )
+
+
+@router.get("/")
+def get_all_task(db = Depends(get_db)):
+    return controller.get_task(db)
