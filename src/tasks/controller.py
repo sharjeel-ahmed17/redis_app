@@ -3,7 +3,7 @@ from src.tasks.dtos import TaskSchema
 from sqlalchemy.orm import session
 from src.tasks.models import Task
 from src.utils.db import redis_client
-
+from fastapi import HTTPException
 TASKS_CACHE_KEY = "tasks"
 CACHE_TTL = 60
 
@@ -46,4 +46,11 @@ def get_task(db : session):
         "data" : tasks_data
     }
 
-
+def get_single_task(task_id : int , db : session):
+    one_task = db.query(Task).get(task_id)
+    if not one_task:
+        raise HTTPException(status_code=404 , detail="task id is in correct")
+    return {
+        "message" : "get single task",
+        "data" : one_task
+    }
