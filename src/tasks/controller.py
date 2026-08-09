@@ -1,11 +1,11 @@
-import json
+# import json
 from src.tasks.dtos import TaskSchema
 from sqlalchemy.orm import session
 from src.tasks.models import Task
 from src.utils.db import redis_client
 from fastapi import HTTPException
-TASKS_CACHE_KEY = "tasks"
-CACHE_TTL = 60
+# TASKS_CACHE_KEY = "tasks"
+# CACHE_TTL = 60
 
 def create_task(body : TaskSchema , db : session ):
     data = body.model_dump()
@@ -18,17 +18,17 @@ def create_task(body : TaskSchema , db : session ):
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
-    redis_client.delete(TASKS_CACHE_KEY)
+    # redis_client.delete(TASKS_CACHE_KEY)
     return new_task
 
 
 def get_task(db : session):
-    cached = redis_client.get(TASKS_CACHE_KEY)
-    if cached:
-        return {
-            "messages": "get task (from cache)",
-            "data": json.loads(cached)
-        }
+    # cached = redis_client.get(TASKS_CACHE_KEY)
+    # if cached:
+    #     return {
+    #         "messages": "get task (from cache)",
+    #         "data": json.loads(cached)
+    #     }
 
     tasks = db.query(Task).all()
     tasks_data = [
@@ -40,7 +40,7 @@ def get_task(db : session):
         }
         for task in tasks
     ]
-    redis_client.setex(TASKS_CACHE_KEY, CACHE_TTL, json.dumps(tasks_data))
+    # redis_client.setex(TASKS_CACHE_KEY, CACHE_TTL, json.dumps(tasks_data))
     return tasks_data
 
 def get_single_task(task_id : int , db : session):
