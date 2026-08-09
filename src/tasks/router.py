@@ -21,4 +21,4 @@ def update_task(body: TaskSchema , task_id : int, db : Session = Depends(get_db)
     return controller.update_task(body , task_id , db )
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task( task_id: int , db : Session = Depends(get_db)):
-    return controller.update_task(task_id , db )
+    return controller.delete_task(task_id , db )
