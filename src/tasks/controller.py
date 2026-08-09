@@ -54,3 +54,28 @@ def get_single_task(task_id : int , db : session):
         "message" : "get single task",
         "data" : one_task
     }
+
+def update_task(body  : TaskSchema, task_id : int  , db: session):
+    one_task = db.query(Task).get(task_id)
+    if not one_task:
+        raise HTTPException(status_code=404 , detail="task id is in correct")
+    body = body.model_dump()
+    for feild , value in body.items():
+        setattr(one_task, feild , value)
+
+    db.add(one_task)
+    db.commit()
+    db.refresh(one_task)
+
+    return {"status"  : "task update successfully"}
+
+def delete_task(task_id : int , db : session ):
+    one_task = db.query(Task).get(task_id)
+    if not one_task:
+        raise HTTPException(status_code=404 , detail="task id is in correct")
+
+    db.delete(one_task)
+    db.commit()
+
+    return {"status"  : "task delete successfully"}
+    
