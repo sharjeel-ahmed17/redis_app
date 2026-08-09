@@ -19,7 +19,7 @@ def create_task(body : TaskSchema , db : session ):
     db.commit()
     db.refresh(new_task)
     redis_client.delete(TASKS_CACHE_KEY)
-    return {"message": "create task route" , "data" : new_task}
+    return new_task
 
 
 def get_task(db : session):
@@ -41,19 +41,13 @@ def get_task(db : session):
         for task in tasks
     ]
     redis_client.setex(TASKS_CACHE_KEY, CACHE_TTL, json.dumps(tasks_data))
-    return {
-        "messages" : "get task",
-        "data" : tasks_data
-    }
+    return tasks_data
 
 def get_single_task(task_id : int , db : session):
     one_task = db.query(Task).get(task_id)
     if not one_task:
         raise HTTPException(status_code=404 , detail="task id is in correct")
-    return {
-        "message" : "get single task",
-        "data" : one_task
-    }
+    return one_task
 
 def update_task(body  : TaskSchema, task_id : int  , db: session):
     one_task = db.query(Task).get(task_id)
@@ -67,7 +61,7 @@ def update_task(body  : TaskSchema, task_id : int  , db: session):
     db.commit()
     db.refresh(one_task)
 
-    return {"status"  : "task update successfully"}
+    return one_task
 
 def delete_task(task_id : int , db : session ):
     one_task = db.query(Task).get(task_id)
@@ -77,5 +71,5 @@ def delete_task(task_id : int , db : session ):
     db.delete(one_task)
     db.commit()
 
-    return {"status"  : "task delete successfully"}
+    return None
     
