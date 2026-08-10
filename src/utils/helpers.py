@@ -4,8 +4,10 @@ from fastapi import HTTPException , status , Request
 import jwt
 from jwt.exceptions import InvalidTokenError
 from src.utils.settings import settings
+from src.utils.db import get_db
+from fastapi import Depends
 
-def is_authenticated(request  : Request, db : Session):
+def is_authenticated(request  : Request, db : Session = Depends(get_db)):
     try:
         token = request.headers.get("authorization")
         if not token : 
@@ -16,7 +18,7 @@ def is_authenticated(request  : Request, db : Session):
         user_id = data.get("_id")
 
         user = db.query(UserModel).filter(UserModel.id == user_id).first()
-        if user:
+        if not user:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED , detail="you are unauthorized")
         return user
     except InvalidTokenError:
