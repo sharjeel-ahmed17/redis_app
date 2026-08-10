@@ -38,7 +38,7 @@ def register(body : UserSchema ,db : Session ):
 
 def login(body : UserLoginSchema ,db : Session):
     user = db.query(UserModel).filter(UserModel.username == body.username).first()
-    if user:
+    if not user:
         raise HTTPException(401 , detail="Invalid credentials")
     
     if not verify_password(body.password , user.hash_password):
