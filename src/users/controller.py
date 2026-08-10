@@ -64,7 +64,7 @@ def is_authenticated(request  : Request, db : Session):
         user_id = data.get("_id")
 
         user = db.query(UserModel).filter(UserModel.id == user_id).first()
-        if user:
+        if not user:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED , detail="you are unauthorized")
         return user
     except InvalidTokenError:

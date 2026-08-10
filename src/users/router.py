@@ -13,7 +13,7 @@ def register(body  : UserSchema , db :  Session = Depends(get_db) ):
 def login(body  : UserLoginSchema , db :  Session = Depends(get_db) ):
     return controller.login(body , db )
 
-@router.get("/is-authenticated", status_code=status.HTTP_200_OK)
+@router.get("/is-authenticated",response_model=UserResponseSchema , status_code=status.HTTP_200_OK)
 def is_authenticated(request : Request, db :  Session = Depends(get_db) ):
     return controller.is_authenticated(request  , db )
     
