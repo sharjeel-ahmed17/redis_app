@@ -32,18 +32,18 @@ def get_task(db : session ,  user : UserModel):
     #         "data": json.loads(cached)
     #     }
 
-    tasks = db.query(Task).all()
-    tasks_data = [
-        {
-            "id": task.id,
-            "title": task.title,
-            "description": task.description,
-            "is_completed": task.is_completed,
-        }
-        for task in tasks
-    ]
+    tasks = db.query(Task).filter(Task.user_id == user.id).all()
+    # tasks_data = [
+    #     {
+    #         "id": task.id,
+    #         "title": task.title,
+    #         "description": task.description,
+    #         "is_completed": task.is_completed,
+    #     }
+    #     for task in tasks
+    # ]
     # redis_client.setex(TASKS_CACHE_KEY, CACHE_TTL, json.dumps(tasks_data))
-    return tasks_data
+    return tasks
 
 def get_single_task(task_id : int , db : session , user : UserModel):
     one_task = db.query(Task).get(task_id)
@@ -55,6 +55,10 @@ def update_task(body  : TaskSchema, task_id : int  , db: session , user : UserMo
     one_task = db.query(Task).get(task_id)
     if not one_task:
         raise HTTPException(status_code=404 , detail="task id is in correct")
+
+    if one_task.user_id != user.id:
+        raise HTTPException(status_code=403 , detail="You are not the owner of this task")
+
     body = body.model_dump()
     for feild , value in body.items():
         setattr(one_task, feild , value)
@@ -69,6 +73,9 @@ def delete_task(task_id : int , db : session , user : UserModel ):
     one_task = db.query(Task).get(task_id)
     if not one_task:
         raise HTTPException(status_code=404 , detail="task id is in correct")
+
+    if one_task.user_id != user.id:
+        raise HTTPException(status_code=403 , detail="You are not the owner of this task")
 
     db.delete(one_task)
     db.commit()

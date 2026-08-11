@@ -5,10 +5,13 @@ class Settings(BaseSettings):
 
     DB_URI : str
     REDIS_URI : str = "redis://localhost:6379/0"
+
     SECRET_KEY : str
     ALGORITHM : str
     ACCESS_TOKEN_EXPIRE_MINUTES : int
 
+    MAIL_USERNAME : str
+    MAIL_PASSWORD : str
 
 settings= Settings()
 
